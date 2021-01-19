@@ -29,13 +29,47 @@ open class TextMessageSizeCalculator: MessageSizeCalculator {
 
     public var incomingMessageLabelInsets = UIEdgeInsets(top: 7, left: 18, bottom: 7, right: 14)
     public var outgoingMessageLabelInsets = UIEdgeInsets(top: 7, left: 14, bottom: 7, right: 18)
+    
+    var outgoingMessageLabelInsetsTailFlushed: UIEdgeInsets {
+        var tmp = outgoingMessageLabelInsets
+        tmp.right -= 5
+        return tmp
+    }
 
     public var messageLabelFont = UIFont.preferredFont(forTextStyle: .body)
 
     internal func messageLabelInsets(for message: MessageType) -> UIEdgeInsets {
         let dataSource = messagesLayout.messagesDataSource
         let isFromCurrentSender = dataSource.isFromCurrentSender(message: message)
-        return isFromCurrentSender ? outgoingMessageLabelInsets : incomingMessageLabelInsets
+        let messageSection = dataSource.section(for: message)
+        let isNextSameSender = dataSource.isNextMessageSameSender(at: IndexPath(row: 0, section: messageSection))
+        
+        if isNextSameSender {
+            return isFromCurrentSender ? outgoingMessageLabelInsetsTailFlushed : incomingMessageLabelInsets   
+        } else {
+            return isFromCurrentSender ? outgoingMessageLabelInsets : incomingMessageLabelInsets
+        }
+    }
+    
+    open override func messageContainerPadding(for message: MessageType) -> UIEdgeInsets {
+        let dataSource = messagesLayout.messagesDataSource
+        let messageSection = dataSource.section(for: message)
+        let isNextSameSender = dataSource.isNextMessageSameSender(at: IndexPath(row: 0, section: messageSection))
+        
+        if isNextSameSender {
+            var insets = super.messageContainerPadding(for: message)
+            let isFromCurrentSender = dataSource.isFromCurrentSender(message: message)
+            
+            if isFromCurrentSender {
+                insets.right += 5
+            } else {
+                insets.left += 5
+            }
+            
+            return insets
+        } else {
+            return super.messageContainerPadding(for: message)
+        }
     }
 
     open override func messageContainerMaxWidth(for message: MessageType) -> CGFloat {

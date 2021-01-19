@@ -40,6 +40,10 @@ public protocol MessagesDataSource: AnyObject {
     ///   The default implementation of this method checks for equality between
     ///   the message's `SenderType` and the current `SenderType`.
     func isFromCurrentSender(message: MessageType) -> Bool
+    
+    func isNextMessageSameSender(at indexPath: IndexPath) -> Bool
+    
+    func section(for message: MessageType) -> Int
 
     /// The message to be used for a `MessageCollectionViewCell` at the given `IndexPath`.
     ///
