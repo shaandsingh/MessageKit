@@ -41,6 +41,10 @@ public protocol MessagesDataSource: AnyObject {
     ///   the message's `SenderType` and the current `SenderType`.
     func isFromCurrentSender(message: MessageType) -> Bool
     
+    /// A helper method to determine if the message following the given message is from the same `SenderType`.
+    ///
+    /// - Parameters:
+    ///   - message: The message to check if it was sent by the same `SenderType` as the message following it.
     func isNextMessageSameSender(as message: MessageType) -> Bool
 
     /// The message to be used for a `MessageCollectionViewCell` at the given `IndexPath`.
