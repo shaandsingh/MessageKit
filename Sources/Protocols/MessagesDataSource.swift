@@ -41,9 +41,7 @@ public protocol MessagesDataSource: AnyObject {
     ///   the message's `SenderType` and the current `SenderType`.
     func isFromCurrentSender(message: MessageType) -> Bool
     
-    func isNextMessageSameSender(at indexPath: IndexPath) -> Bool
-    
-    func section(for message: MessageType) -> Int
+    func isNextMessageSameSender(_ message: MessageType) -> Bool
 
     /// The message to be used for a `MessageCollectionViewCell` at the given `IndexPath`.
     ///
