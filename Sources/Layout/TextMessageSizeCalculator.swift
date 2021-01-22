@@ -41,8 +41,7 @@ open class TextMessageSizeCalculator: MessageSizeCalculator {
     internal func messageLabelInsets(for message: MessageType) -> UIEdgeInsets {
         let dataSource = messagesLayout.messagesDataSource
         let isFromCurrentSender = dataSource.isFromCurrentSender(message: message)
-        let messageSection = dataSource.section(for: message)
-        let isNextSameSender = dataSource.isNextMessageSameSender(at: IndexPath(row: 0, section: messageSection))
+        let isNextSameSender = dataSource.isNextMessageSameSender(as: message)
         
         if isNextSameSender {
             return isFromCurrentSender ? outgoingMessageLabelInsetsTailFlushed : incomingMessageLabelInsets   
@@ -53,8 +52,7 @@ open class TextMessageSizeCalculator: MessageSizeCalculator {
     
     open override func messageContainerPadding(for message: MessageType) -> UIEdgeInsets {
         let dataSource = messagesLayout.messagesDataSource
-        let messageSection = dataSource.section(for: message)
-        let isNextSameSender = dataSource.isNextMessageSameSender(at: IndexPath(row: 0, section: messageSection))
+        let isNextSameSender = dataSource.isNextMessageSameSender(as: message)
         
         if isNextSameSender {
             var insets = super.messageContainerPadding(for: message)
