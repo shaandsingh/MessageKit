@@ -30,6 +30,18 @@ open class TextMessageSizeCalculator: MessageSizeCalculator {
     public var incomingMessageLabelInsets = UIEdgeInsets(top: 7, left: 18, bottom: 7, right: 14)
     public var outgoingMessageLabelInsets = UIEdgeInsets(top: 7, left: 14, bottom: 7, right: 18)
     
+    var incomingMessageLabelInsetsNoTail: UIEdgeInsets {
+        var tmp = incomingMessageLabelInsets
+        tmp.left -= 4
+        return tmp
+    }
+    
+    var incomingMessageLabelInsetsNoTailSingleLetter: UIEdgeInsets {
+        var tmp = incomingMessageLabelInsets
+        tmp.right += 4
+        return tmp
+    }
+    
     var outgoingMessageLabelInsetsNoTail: UIEdgeInsets {
         var tmp = outgoingMessageLabelInsets
         tmp.right -= 4
@@ -67,7 +79,15 @@ open class TextMessageSizeCalculator: MessageSizeCalculator {
                 return outgoingMessageLabelInsets
             }
         } else {
-            return incomingMessageLabelInsets
+            if isNextSameSender {
+                if isSingleLetter {
+                    return incomingMessageLabelInsetsNoTailSingleLetter
+                } else {
+                    return incomingMessageLabelInsetsNoTail
+                }
+            } else {
+                return incomingMessageLabelInsets
+            }
         }
     }
     
@@ -98,7 +118,17 @@ open class TextMessageSizeCalculator: MessageSizeCalculator {
                 return padding
             }
         } else {
-            return padding
+            if isNextSameSender {
+                if isSingleLetter {
+                    padding.left += 4
+                    return padding
+                } else {
+                    padding.left += 4
+                    return padding
+                }
+            } else {
+                return padding
+            }
         }
     }
 

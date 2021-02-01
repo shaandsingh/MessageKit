@@ -96,7 +96,9 @@ internal extension MessagesViewController {
         let keyboardEndFrame = view.convert(keyboardEndFrameInScreenCoords, from: view.window)
 
         let newBottomInset = requiredScrollViewBottomInset(forKeyboardFrame: keyboardEndFrame)
-        let differenceOfBottomInset = newBottomInset - messageCollectionViewBottomInset
+        
+        // Make this 0 to fix odd bug with messages appearing under input view -Shaan 2/1/21
+        let differenceOfBottomInset = CGFloat(0) // newBottomInset - messageCollectionViewBottomInset
 
         if maintainPositionOnKeyboardFrameChanged && differenceOfBottomInset != 0 {
             let contentOffset = CGPoint(x: messagesCollectionView.contentOffset.x, y: messagesCollectionView.contentOffset.y + differenceOfBottomInset)
