@@ -30,9 +30,15 @@ open class TextMessageSizeCalculator: MessageSizeCalculator {
     public var incomingMessageLabelInsets = UIEdgeInsets(top: 7, left: 18, bottom: 7, right: 14)
     public var outgoingMessageLabelInsets = UIEdgeInsets(top: 7, left: 14, bottom: 7, right: 18)
     
-    var outgoingMessageLabelInsetsTailFlushed: UIEdgeInsets {
+    var outgoingMessageLabelInsetsNoTail: UIEdgeInsets {
         var tmp = outgoingMessageLabelInsets
-        tmp.right -= 5
+        tmp.right -= 4
+        return tmp
+    }
+    
+    var outgoingMessageLabelInsetsNoTailSingleLetter: UIEdgeInsets {
+        var tmp = outgoingMessageLabelInsets
+        tmp.left += 4
         return tmp
     }
 
@@ -40,33 +46,59 @@ open class TextMessageSizeCalculator: MessageSizeCalculator {
 
     internal func messageLabelInsets(for message: MessageType) -> UIEdgeInsets {
         let dataSource = messagesLayout.messagesDataSource
+        
         let isFromCurrentSender = dataSource.isFromCurrentSender(message: message)
+        
         let isNextSameSender = dataSource.isNextMessageSameSender(as: message)
         
-        if isNextSameSender {
-            return isFromCurrentSender ? outgoingMessageLabelInsetsTailFlushed : incomingMessageLabelInsets   
+        var isSingleLetter = false
+        if case let .text(content) = message.kind, content.count == 1 {
+            isSingleLetter = true
+        }
+        
+        if isFromCurrentSender {
+            if isNextSameSender {
+                if isSingleLetter {
+                    return outgoingMessageLabelInsetsNoTailSingleLetter
+                } else {
+                    return outgoingMessageLabelInsetsNoTail
+                }
+            } else {
+                return outgoingMessageLabelInsets
+            }
         } else {
-            return isFromCurrentSender ? outgoingMessageLabelInsets : incomingMessageLabelInsets
+            return incomingMessageLabelInsets
         }
     }
     
     open override func messageContainerPadding(for message: MessageType) -> UIEdgeInsets {
         let dataSource = messagesLayout.messagesDataSource
+        
+        let isFromCurrentSender = dataSource.isFromCurrentSender(message: message)
+        
         let isNextSameSender = dataSource.isNextMessageSameSender(as: message)
         
-        if isNextSameSender {
-            var insets = super.messageContainerPadding(for: message)
-            let isFromCurrentSender = dataSource.isFromCurrentSender(message: message)
-            
-            if isFromCurrentSender {
-                insets.right += 5
+        var isSingleLetter = false
+        if case let .text(content) = message.kind, content.count == 1 {
+            isSingleLetter = true
+        }
+        
+        var padding = super.messageContainerPadding(for: message)
+        
+        if isFromCurrentSender {
+            if isNextSameSender {
+                if isSingleLetter {
+                    padding.right += 4
+                    return padding
+                } else {
+                    padding.right += 4
+                    return padding
+                }
             } else {
-                insets.left += 5
+                return padding
             }
-            
-            return insets
         } else {
-            return super.messageContainerPadding(for: message)
+            return padding
         }
     }
 

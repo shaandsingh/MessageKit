@@ -96,7 +96,7 @@ internal extension MessagesViewController {
         let keyboardEndFrame = view.convert(keyboardEndFrameInScreenCoords, from: view.window)
 
         let newBottomInset = requiredScrollViewBottomInset(forKeyboardFrame: keyboardEndFrame)
-        let differenceOfBottomInset = newBottomInset - messageCollectionViewBottomInset
+        let differenceOfBottomInset = CGFloat(0)//newBottomInset - messageCollectionViewBottomInset
 
         if maintainPositionOnKeyboardFrameChanged && differenceOfBottomInset != 0 {
             let contentOffset = CGPoint(x: messagesCollectionView.contentOffset.x, y: messagesCollectionView.contentOffset.y + differenceOfBottomInset)
